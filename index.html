@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Dado TODITO 3D</title>
+  <title>Dado TODITO 3D (Móvil)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     * {
       box-sizing: border-box;
@@ -11,7 +13,7 @@
 
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -20,26 +22,30 @@
     }
 
     .wrapper {
+      width: 100%;
+      max-width: 420px;
+      padding: 16px 16px 24px;
       text-align: center;
     }
 
     h1 {
-      margin-bottom: 6px;
-      font-size: 24px;
-      letter-spacing: 0.15em;
+      margin-bottom: 4px;
+      font-size: 22px;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
     }
 
     .subtitle {
       font-size: 13px;
       color: #9ca3af;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .scene {
-      width: 160px;
-      height: 160px;
-      margin: 0 auto 20px;
+      /* Cubo adaptable al ancho de la pantalla */
+      width: min(60vw, 220px);
+      height: min(60vw, 220px);
+      margin: 0 auto 18px;
       perspective: 700px;
     }
 
@@ -55,11 +61,11 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      border-radius: 24px;
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 52px;
+      font-size: clamp(36px, 14vw, 52px);
       font-weight: 800;
       color: #f9fafb;
       text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
@@ -67,24 +73,29 @@
       backface-visibility: hidden;
     }
 
-    .front  { transform: translateZ(80px); background: linear-gradient(135deg, #4f46e5, #6366f1); }
-    .back   { transform: rotateY(180deg) translateZ(80px); background: linear-gradient(135deg, #ea580c, #f97316); }
-    .right  { transform: rotateY(90deg) translateZ(80px); background: linear-gradient(135deg, #0d9488, #14b8a6); }
-    .left   { transform: rotateY(-90deg) translateZ(80px); background: linear-gradient(135deg, #b91c1c, #ef4444); }
-    .top    { transform: rotateX(90deg) translateZ(80px); background: linear-gradient(135deg, #16a34a, #22c55e); }
-    .bottom { transform: rotateX(-90deg) translateZ(80px); background: linear-gradient(135deg, #a21caf, #ec4899); }
+    /* Profundidad depende de la mitad de la escena:
+       Usamos 50% de la altura -> se centra bien sin depender de px fijos */
+    .front  { transform: translateZ(50%); background: linear-gradient(135deg, #4f46e5, #6366f1); }
+    .back   { transform: rotateY(180deg) translateZ(50%); background: linear-gradient(135deg, #ea580c, #f97316); }
+    .right  { transform: rotateY(90deg) translateZ(50%);  background: linear-gradient(135deg, #0d9488, #14b8a6); }
+    .left   { transform: rotateY(-90deg) translateZ(50%); background: linear-gradient(135deg, #b91c1c, #ef4444); }
+    .top    { transform: rotateX(90deg) translateZ(50%);  background: linear-gradient(135deg, #16a34a, #22c55e); }
+    .bottom { transform: rotateX(-90deg) translateZ(50%); background: linear-gradient(135deg, #a21caf, #ec4899); }
 
     button {
-      padding: 10px 18px;
+      width: 100%;
+      max-width: 260px;
+      padding: 12px 18px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       background: linear-gradient(135deg, #facc15, #f97316);
       color: #111827;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       box-shadow: 0 6px 18px rgba(234, 179, 8, 0.6);
       transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s;
@@ -95,9 +106,26 @@
       box-shadow: 0 8px 22px rgba(234, 179, 8, 0.9);
     }
 
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(234, 179, 8, 0.7);
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: center;
+    }
+
     .result {
       margin-top: 14px;
-      font-size: 16px;
+      font-size: 15px;
       min-height: 24px;
     }
 
@@ -113,7 +141,7 @@
     }
 
     .meaning {
-      margin-top: 8px;
+      margin-top: 6px;
       font-size: 14px;
       color: #fbbf24;
       font-weight: 600;
@@ -121,6 +149,15 @@
 
     .scene:hover {
       cursor: pointer;
+    }
+
+    @media (min-width: 768px) {
+      h1 {
+        font-size: 26px;
+      }
+      .subtitle {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
@@ -131,6 +168,7 @@
 
   <div class="scene" id="scene">
     <div class="cube" id="cube">
+      <!-- Caras con T O D I T O -->
       <div class="face front">T</div>
       <div class="face back">D</div>
       <div class="face right">O</div>
@@ -140,7 +178,9 @@
     </div>
   </div>
 
-  <button id="rollBtn">Lanzar TODITO 🎲</button>
+  <div class="btn-container">
+    <button id="rollBtn">Lanzar TODITO 🎲</button>
+  </div>
 
   <div class="result" id="result"></div>
   <div class="meaning" id="meaning"></div>
@@ -153,14 +193,14 @@
   const resultDiv = document.getElementById('result');
   const meaningDiv = document.getElementById('meaning');
 
-  // Definimos las caras con sus letras y significados
+  // Caras con letra, significado y orientación
   const faces = [
-    { letter: 'T', meaning: 'TOMA 🍷', x: 0, y: 0 },
-    { letter: 'O', meaning: 'ORDENA 👑', x: 0, y: -90 },
-    { letter: 'D', meaning: 'DERECHA 👉', x: 0, y: 180 },
-    { letter: 'I', meaning: 'IZQUIERDA 👈', x: 0, y: 90 },
-    { letter: 'T', meaning: 'TOMA 🍷', x: -90, y: 0 },
-    { letter: 'O', meaning: 'ORDENA 👑', x: 90, y: 0 }
+    { letter: 'T', meaning: 'TOMA 🍷',      x: 0,   y: 0   },  // frente
+    { letter: 'O', meaning: 'ORDENA 👑',    x: 0,   y: -90 },  // derecha
+    { letter: 'D', meaning: 'DERECHA 👉',   x: 0,   y: 180 },  // atrás
+    { letter: 'I', meaning: 'IZQUIERDA 👈', x: 0,   y: 90  },  // izquierda
+    { letter: 'T', meaning: 'TOMA 🍷',      x: -90, y: 0   },  // arriba
+    { letter: 'O', meaning: 'ORDENA 👑',    x: 90,  y: 0   },  // abajo
   ];
 
   let rolling = false;
